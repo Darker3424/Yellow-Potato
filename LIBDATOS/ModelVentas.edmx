@@ -1,0 +1,292 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="VentasIDATModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <!--Errores durante la generación:
+advertencia 6002: La tabla o vista 'VentasIDAT.dbo.Detalles de pedidos' no tiene definida ninguna clave principal. Se ha inferido la clave y la definición se creado como una vista o tabla de solo lectura.-->
+        <EntityType Name="Detalles de pedidos">
+          <Key>
+            <PropertyRef Name="IdProducto" />
+            <PropertyRef Name="PrecioUnidad" />
+            <PropertyRef Name="Cantidad" />
+            <PropertyRef Name="Descuento" />
+          </Key>
+          <Property Name="IdPedido" Type="int" />
+          <Property Name="IdProducto" Type="int" Nullable="false" />
+          <Property Name="PrecioUnidad" Type="money" Nullable="false" />
+          <Property Name="Cantidad" Type="smallint" Nullable="false" />
+          <Property Name="Descuento" Type="real" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Empleados">
+          <Key>
+            <PropertyRef Name="IdEmpleado" />
+          </Key>
+          <Property Name="IdEmpleado" Type="int" Nullable="false" />
+          <Property Name="Apellidos" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="Nombre" Type="nvarchar" MaxLength="10" Nullable="false" />
+          <Property Name="Cargo" Type="nvarchar" MaxLength="30" />
+          <Property Name="Tratamiento" Type="nvarchar" MaxLength="25" />
+          <Property Name="FechaNacimiento" Type="datetime" />
+          <Property Name="FechaContratacion" Type="datetime" />
+          <Property Name="Direccion" Type="nvarchar" MaxLength="60" />
+          <Property Name="Ciudad" Type="nvarchar" MaxLength="15" />
+          <Property Name="Region" Type="nvarchar" MaxLength="15" />
+          <Property Name="CodPostal" Type="nvarchar" MaxLength="10" />
+          <Property Name="Pais" Type="nvarchar" MaxLength="15" />
+          <Property Name="TelDomicilio" Type="nvarchar" MaxLength="24" />
+          <Property Name="Extension" Type="nvarchar" MaxLength="4" />
+          <Property Name="Foto" Type="image" />
+          <Property Name="Notas" Type="nvarchar(max)" />
+          <Property Name="Jefe" Type="int" />
+        </EntityType>
+        <EntityType Name="Pedidos">
+          <Key>
+            <PropertyRef Name="IdPedido" />
+          </Key>
+          <Property Name="IdPedido" Type="int" Nullable="false" />
+          <Property Name="IdCliente" Type="nvarchar" MaxLength="5" Nullable="false" />
+          <Property Name="IdEmpleado" Type="int" />
+          <Property Name="FechaPedido" Type="datetime" />
+          <Property Name="FechaEntrega" Type="datetime" />
+          <Property Name="FechaEnvio" Type="datetime" />
+          <Property Name="FormaEnvio" Type="int" />
+          <Property Name="Cargo" Type="money" />
+          <Property Name="Destinatario" Type="nvarchar" MaxLength="40" />
+          <Property Name="DireccionDestinatario" Type="nvarchar" MaxLength="60" />
+          <Property Name="CiudadDestinatario" Type="nvarchar" MaxLength="15" />
+          <Property Name="RegionDestinatario" Type="nvarchar" MaxLength="15" />
+          <Property Name="CodPostalDestinatario" Type="nvarchar" MaxLength="10" />
+          <Property Name="PaisDestinatario" Type="nvarchar" MaxLength="15" />
+        </EntityType>
+        <Association Name="FK_Detalles de pedidos_Pedidos">
+          <End Role="Pedidos" Type="Self.Pedidos" Multiplicity="0..1" />
+          <End Role="Detalles de pedidos" Type="Self.Detalles de pedidos" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Pedidos">
+              <PropertyRef Name="IdPedido" />
+            </Principal>
+            <Dependent Role="Detalles de pedidos">
+              <PropertyRef Name="IdPedido" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Pedidos_Empleados">
+          <End Role="Empleados" Type="Self.Empleados" Multiplicity="0..1" />
+          <End Role="Pedidos" Type="Self.Pedidos" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Empleados">
+              <PropertyRef Name="IdEmpleado" />
+            </Principal>
+            <Dependent Role="Pedidos">
+              <PropertyRef Name="IdEmpleado" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="VentasIDATModelStoreContainer">
+          <EntitySet Name="Empleados" EntityType="Self.Empleados" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Pedidos" EntityType="Self.Pedidos" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Detalles de pedidos" EntityType="Self.Detalles de pedidos" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [Detalles de pedidos].[IdPedido] AS [IdPedido], 
+    [Detalles de pedidos].[IdProducto] AS [IdProducto], 
+    [Detalles de pedidos].[PrecioUnidad] AS [PrecioUnidad], 
+    [Detalles de pedidos].[Cantidad] AS [Cantidad], 
+    [Detalles de pedidos].[Descuento] AS [Descuento]
+    FROM [dbo].[Detalles de pedidos] AS [Detalles de pedidos]</DefiningQuery>
+          </EntitySet>
+          <AssociationSet Name="FK_Detalles de pedidos_Pedidos" Association="Self.FK_Detalles de pedidos_Pedidos">
+            <End Role="Pedidos" EntitySet="Pedidos" />
+            <End Role="Detalles de pedidos" EntitySet="Detalles de pedidos" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Pedidos_Empleados" Association="Self.FK_Pedidos_Empleados">
+            <End Role="Empleados" EntitySet="Empleados" />
+            <End Role="Pedidos" EntitySet="Pedidos" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="VentasIDATModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Empleados">
+          <Key>
+            <PropertyRef Name="IdEmpleado" />
+          </Key>
+          <Property Name="IdEmpleado" Type="Int32" Nullable="false" />
+          <Property Name="Apellidos" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Nombre" Type="String" MaxLength="10" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Cargo" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="Tratamiento" Type="String" MaxLength="25" FixedLength="false" Unicode="true" />
+          <Property Name="FechaNacimiento" Type="DateTime" Precision="3" />
+          <Property Name="FechaContratacion" Type="DateTime" Precision="3" />
+          <Property Name="Direccion" Type="String" MaxLength="60" FixedLength="false" Unicode="true" />
+          <Property Name="Ciudad" Type="String" MaxLength="15" FixedLength="false" Unicode="true" />
+          <Property Name="Region" Type="String" MaxLength="15" FixedLength="false" Unicode="true" />
+          <Property Name="CodPostal" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="Pais" Type="String" MaxLength="15" FixedLength="false" Unicode="true" />
+          <Property Name="TelDomicilio" Type="String" MaxLength="24" FixedLength="false" Unicode="true" />
+          <Property Name="Extension" Type="String" MaxLength="4" FixedLength="false" Unicode="true" />
+          <Property Name="Foto" Type="Binary" MaxLength="Max" FixedLength="false" />
+          <Property Name="Notas" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Jefe" Type="Int32" />
+          <NavigationProperty Name="Pedidos" Relationship="Self.FK_Pedidos_Empleados" FromRole="Empleados" ToRole="Pedidos" />
+        </EntityType>
+        <EntityType Name="Pedidos">
+          <Key>
+            <PropertyRef Name="IdPedido" />
+          </Key>
+          <Property Name="IdPedido" Type="Int32" Nullable="false" />
+          <Property Name="IdCliente" Type="String" MaxLength="5" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="IdEmpleado" Type="Int32" />
+          <Property Name="FechaPedido" Type="DateTime" Precision="3" />
+          <Property Name="FechaEntrega" Type="DateTime" Precision="3" />
+          <Property Name="FechaEnvio" Type="DateTime" Precision="3" />
+          <Property Name="FormaEnvio" Type="Int32" />
+          <Property Name="Cargo" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="Destinatario" Type="String" MaxLength="40" FixedLength="false" Unicode="true" />
+          <Property Name="DireccionDestinatario" Type="String" MaxLength="60" FixedLength="false" Unicode="true" />
+          <Property Name="CiudadDestinatario" Type="String" MaxLength="15" FixedLength="false" Unicode="true" />
+          <Property Name="RegionDestinatario" Type="String" MaxLength="15" FixedLength="false" Unicode="true" />
+          <Property Name="CodPostalDestinatario" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="PaisDestinatario" Type="String" MaxLength="15" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Empleados" Relationship="Self.FK_Pedidos_Empleados" FromRole="Pedidos" ToRole="Empleados" />
+          <NavigationProperty Name="Detalles_de_pedidos" Relationship="Self.FK_Detalles_de_pedidos_Pedidos" FromRole="Pedidos" ToRole="Detalles_de_pedidos" />
+        </EntityType>
+        <EntityType Name="Detalles_de_pedidos">
+          <Key>
+            <PropertyRef Name="IdProducto" />
+            <PropertyRef Name="PrecioUnidad" />
+            <PropertyRef Name="Cantidad" />
+            <PropertyRef Name="Descuento" />
+          </Key>
+          <Property Name="IdPedido" Type="Int32" />
+          <Property Name="IdProducto" Type="Int32" Nullable="false" />
+          <Property Name="PrecioUnidad" Type="Decimal" Precision="19" Scale="4" Nullable="false" />
+          <Property Name="Cantidad" Type="Int16" Nullable="false" />
+          <Property Name="Descuento" Type="Single" Nullable="false" />
+          <NavigationProperty Name="Pedidos" Relationship="Self.FK_Detalles_de_pedidos_Pedidos" FromRole="Detalles_de_pedidos" ToRole="Pedidos" />
+        </EntityType>
+        <Association Name="FK_Pedidos_Empleados">
+          <End Role="Empleados" Type="Self.Empleados" Multiplicity="0..1" />
+          <End Role="Pedidos" Type="Self.Pedidos" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Empleados">
+              <PropertyRef Name="IdEmpleado" />
+            </Principal>
+            <Dependent Role="Pedidos">
+              <PropertyRef Name="IdEmpleado" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Detalles_de_pedidos_Pedidos">
+          <End Role="Pedidos" Type="Self.Pedidos" Multiplicity="0..1" />
+          <End Role="Detalles_de_pedidos" Type="Self.Detalles_de_pedidos" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Pedidos">
+              <PropertyRef Name="IdPedido" />
+            </Principal>
+            <Dependent Role="Detalles_de_pedidos">
+              <PropertyRef Name="IdPedido" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="VentasIDATEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Empleados" EntityType="Self.Empleados" />
+          <EntitySet Name="Pedidos" EntityType="Self.Pedidos" />
+          <EntitySet Name="Detalles_de_pedidos" EntityType="Self.Detalles_de_pedidos" />
+          <AssociationSet Name="FK_Pedidos_Empleados" Association="Self.FK_Pedidos_Empleados">
+            <End Role="Empleados" EntitySet="Empleados" />
+            <End Role="Pedidos" EntitySet="Pedidos" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Detalles_de_pedidos_Pedidos" Association="Self.FK_Detalles_de_pedidos_Pedidos">
+            <End Role="Pedidos" EntitySet="Pedidos" />
+            <End Role="Detalles_de_pedidos" EntitySet="Detalles_de_pedidos" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="VentasIDATModelStoreContainer" CdmEntityContainer="VentasIDATEntities">
+          <EntitySetMapping Name="Empleados">
+            <EntityTypeMapping TypeName="VentasIDATModel.Empleados">
+              <MappingFragment StoreEntitySet="Empleados">
+                <ScalarProperty Name="IdEmpleado" ColumnName="IdEmpleado" />
+                <ScalarProperty Name="Apellidos" ColumnName="Apellidos" />
+                <ScalarProperty Name="Nombre" ColumnName="Nombre" />
+                <ScalarProperty Name="Cargo" ColumnName="Cargo" />
+                <ScalarProperty Name="Tratamiento" ColumnName="Tratamiento" />
+                <ScalarProperty Name="FechaNacimiento" ColumnName="FechaNacimiento" />
+                <ScalarProperty Name="FechaContratacion" ColumnName="FechaContratacion" />
+                <ScalarProperty Name="Direccion" ColumnName="Direccion" />
+                <ScalarProperty Name="Ciudad" ColumnName="Ciudad" />
+                <ScalarProperty Name="Region" ColumnName="Region" />
+                <ScalarProperty Name="CodPostal" ColumnName="CodPostal" />
+                <ScalarProperty Name="Pais" ColumnName="Pais" />
+                <ScalarProperty Name="TelDomicilio" ColumnName="TelDomicilio" />
+                <ScalarProperty Name="Extension" ColumnName="Extension" />
+                <ScalarProperty Name="Foto" ColumnName="Foto" />
+                <ScalarProperty Name="Notas" ColumnName="Notas" />
+                <ScalarProperty Name="Jefe" ColumnName="Jefe" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Pedidos">
+            <EntityTypeMapping TypeName="VentasIDATModel.Pedidos">
+              <MappingFragment StoreEntitySet="Pedidos">
+                <ScalarProperty Name="IdPedido" ColumnName="IdPedido" />
+                <ScalarProperty Name="IdCliente" ColumnName="IdCliente" />
+                <ScalarProperty Name="IdEmpleado" ColumnName="IdEmpleado" />
+                <ScalarProperty Name="FechaPedido" ColumnName="FechaPedido" />
+                <ScalarProperty Name="FechaEntrega" ColumnName="FechaEntrega" />
+                <ScalarProperty Name="FechaEnvio" ColumnName="FechaEnvio" />
+                <ScalarProperty Name="FormaEnvio" ColumnName="FormaEnvio" />
+                <ScalarProperty Name="Cargo" ColumnName="Cargo" />
+                <ScalarProperty Name="Destinatario" ColumnName="Destinatario" />
+                <ScalarProperty Name="DireccionDestinatario" ColumnName="DireccionDestinatario" />
+                <ScalarProperty Name="CiudadDestinatario" ColumnName="CiudadDestinatario" />
+                <ScalarProperty Name="RegionDestinatario" ColumnName="RegionDestinatario" />
+                <ScalarProperty Name="CodPostalDestinatario" ColumnName="CodPostalDestinatario" />
+                <ScalarProperty Name="PaisDestinatario" ColumnName="PaisDestinatario" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Detalles_de_pedidos">
+            <EntityTypeMapping TypeName="VentasIDATModel.Detalles_de_pedidos">
+              <MappingFragment StoreEntitySet="Detalles de pedidos">
+                <ScalarProperty Name="IdPedido" ColumnName="IdPedido" />
+                <ScalarProperty Name="IdProducto" ColumnName="IdProducto" />
+                <ScalarProperty Name="PrecioUnidad" ColumnName="PrecioUnidad" />
+                <ScalarProperty Name="Cantidad" ColumnName="Cantidad" />
+                <ScalarProperty Name="Descuento" ColumnName="Descuento" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="Ninguno" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
